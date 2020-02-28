@@ -27,8 +27,8 @@ sql_func(){
 			and entry_date < '$fechaF';"
 	else
 
-		sql1="select count(*) from vicidial_list where list_id='$list' and entry_date >= date_add('$fechaI',interval $interval hour) and 
-			entry_date < date_add('$fechaF',interval $interval hour);"
+		sql1="select count(*) from vicidial_list where list_id='$list' and entry_date >= date_add('$fechaI',interval $interval hour) 
+			and entry_date < date_add('$fechaF',interval $interval hour);"
 	fi
 
 	sql2="select count(*) from vicidial_list where list_id='$list' 
@@ -37,7 +37,8 @@ sql_func(){
 	sql3="select count(*) from vicidial_list where list_id='$list' and ( modify_date >= '$fechaI' and modify_date < '$fechaF' 
 		and status in ( $statusContacts ));"	
 
-	sql4="select sum(wait_sec + talk_sec + dispo_sec + pause_sec) from vicidial_agent_log where campaign_id='$campaign' and event_time >= '$fechaI' and event_time < '$fechaF';"
+	sql4="select sum(wait_sec + talk_sec + dispo_sec + pause_sec) from vicidial_agent_log where campaign_id='$campaign' and 
+		event_time >= '$fechaI' and event_time < '$fechaF' and wait_sec < '65535' and talk_sec < '65535' and dispo_sec < '65535' and pause_sec < '65535';"
 	}
 
 sql5="select list_id from vicidial_lists where campaign_id='$campaign' and active='Y';"
@@ -99,6 +100,7 @@ echo "<html><head></head><body>
 <b>Leads received =</b> $leads_day<br/>
 <b>Sales =</b> $leads_sales<br/>
 <b>Contacts $fechaI =</b> $leads_contacts<br/>
+<b>Total Login =</b> $total_login<br/>
 <b>Leads vs Sales(%) =</b> $leads_vs_sales<br/>
 <b>Contacts vs Sales(%) =</b> $contacts_vs_sales<br/>
 <b>Total Login vs Sales(%) =</b> $total_login_vs_sales<br/><br/><br/>
