@@ -63,6 +63,8 @@ for i in ${lists[@]}; do
 	contacts=$( mysql --host=$host -u internalreports -p$pw -Dasterisk -Ns -e "$sql3" )
 	login=$( mysql --host=$host -u internalreports -p$pw -Dasterisk -Ns -e "$sql4" )
 	
+	if [ $login = 'NULL' ]; then login=0; fi
+	
 	let leads_day=$leads_day+$day
 	let leads_sales=$leads_sales+$sales
 	let leads_contacts=$leads_contacts+$contacts
