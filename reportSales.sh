@@ -86,7 +86,7 @@ else
 	contacts_vs_sales="No contacts"
 fi
 
-if [ $total_login -gt 3600 ]; then
+if [ $total_login -ge 3600 ]; then
 	total_login=$( echo "$total_login/3600" | bc )
 	total_login_vs_sales=$( echo "scale=3; $leads_sales/$total_login" | bc | sed 's/^\./0./' )
 else
