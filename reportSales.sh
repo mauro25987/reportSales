@@ -38,7 +38,7 @@ sql_func(){
 		and status in ( $statusContacts ));"	
 
 	sql4="select sum(wait_sec + talk_sec + dispo_sec + pause_sec) from vicidial_agent_log where campaign_id='$campaign' and 
-		event_time >= '$fechaI' and event_time < '$fechaF' and wait_sec < '65535' and talk_sec < '65535' and dispo_sec < '65535' and pause_sec < '65535';"
+		event_time >= '$fechaI' and event_time < '$fechaF' and wait_sec < '65000' and talk_sec < '65000' and dispo_sec < '65535' and pause_sec < '65000';"
 	}
 
 sql5="select list_id from vicidial_lists where campaign_id='$campaign' and active='Y';"
@@ -77,20 +77,20 @@ campaign_name=$( mysql --host=$host -u internalreports -p$pw -Dasterisk -Ns -e "
 if [ $leads_day -gt 0 ]; then
 	leads_vs_sales=$( echo "scale=2; $leads_sales*100/$leads_day" | bc | sed 's/^\./0./' )
 else
-	leads_vs_sales="Not leads today"
+	leads_vs_sales="No leads"
 fi
 
 if [ $leads_contacts -gt 0 ]; then
 	contacts_vs_sales=$( echo "scale=2; $leads_sales*100/$leads_contacts" | bc | sed 's/^\./0./' )
 else
-	contacts_vs_sales="Not contacts today"
+	contacts_vs_sales="No contacts"
 fi
 
 if [ $total_login -gt 3600 ]; then
 	total_login=$( echo "$total_login/3600" | bc )
-	total_login_vs_sales=$( echo "scale=2; $leads_sales*100/$total_login" | bc | sed 's/^\./0./' )
+	total_login_vs_sales=$( echo "scale=3; $leads_sales/$total_login" | bc | sed 's/^\./0./' )
 else
-	contacts_vs_sales="Not users logins today"
+	total_login_vs_sales="Users did not login today"
 fi
 
 echo "<html><head></head><body>
@@ -100,10 +100,10 @@ echo "<html><head></head><body>
 <b>Leads received =</b> $leads_day<br/>
 <b>Sales =</b> $leads_sales<br/>
 <b>Contacts $fechaI =</b> $leads_contacts<br/>
-<b>Total Login =</b> $total_login<br/>
+<b>Total Hours =</b> $total_login<br/>
 <b>Leads vs Sales(%) =</b> $leads_vs_sales<br/>
 <b>Contacts vs Sales(%) =</b> $contacts_vs_sales<br/>
-<b>Total Login vs Sales(%) =</b> $total_login_vs_sales<br/><br/><br/>
+<b>Total Hours vs Sales =</b> $total_login_vs_sales<br/><br/><br/>
 This is an automatic report, please don't reply this email.
 </body></html>" > /tmp/$name.html  
 
